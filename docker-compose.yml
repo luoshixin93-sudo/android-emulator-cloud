@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  android-emulator:
+    image: budtmo/docker-android:emulator_11.0
+    container_name: android-emulator-cloud
+    ports:
+      - "6080:6080"   # noVNC web interface
+      - "5554:5554"   # ADB emulator port
+      - "5555:5555"   # ADB emulator port
+    environment:
+      - EMULATOR_DEVICE=Samsung Galaxy S10
+      - WEB_VNC=true
+      - DEVICE_NAME=Samsung Galaxy S10
+    devices:
+      - /dev/kvm:/dev/kvm
+    volumes:
+      - android-data:/home/androidusr
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  android-data:
+    driver: local
